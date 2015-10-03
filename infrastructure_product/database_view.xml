@@ -7,13 +7,18 @@
     <field name="model">infrastructure.database</field>
     <field name="inherit_id" ref="infrastructure.view_infrastructure_database_form"/>
     <field name="arch" type="xml">
-        <field name="main_hostname" position="after">
-            <label for="product_ids"/>
-            <div>
-                <field name="product_ids" widget="many2many_tags" class="oe_inline"/>
+        <page name="backups" position="before">
+            <page name="products" string="Products">
                 <button name="install_product_modules" string="⇒ Install Modules" type="object" class="oe_link" attrs="{'invisible':[('product_ids', '=', [(6, False, [])])]}"/>
-            </div>
-        </field>
+                <field name="product_ids">
+                    <tree>
+                        <field name="name"/>
+                        <field name="list_price"/>
+                        <button type="object" string="SADasda" icon="gtk-execute" help="asadsa" name="asda"/>
+                    </tree>
+                </field>
+            </page>
+        </page>
     </field>
 </record>
 

@@ -18,6 +18,13 @@ class product_template(models.Model):
         'template_id',
         'Modules',
         )
+    suggested_module_ids = fields.Many2many(
+        'ir.module.module',
+        'product_template_suggested_module_rel',
+        'template_id',
+        'module_id',
+        string='Suggested Modules',
+    )
 
 
 class product_module(models.Model):

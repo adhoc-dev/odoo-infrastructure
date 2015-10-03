@@ -9,12 +9,15 @@
     <field name="arch" type="xml">
         <notebook>
             <page string="Modules" attrs="{'invisible':[('type', '!=', 'odoo_pack')]}">
-                <field name="module_ids">
-                    <tree editable="top">
-                        <field name="module_id"/>
-                        <field name="name"/>
-                    </tree>
-                </field>
+                <group col="1">
+                    <field name="module_ids">
+                        <tree editable="top">
+                            <field name="module_id"/>
+                            <field name="name"/>
+                        </tree>
+                    </field>
+                    <field name="suggested_module_ids"/>
+                </group>
             </page>
         </notebook>
     </field>
