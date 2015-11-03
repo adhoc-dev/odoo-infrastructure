@@ -11,7 +11,11 @@
         <tree string="Database Users" editable="top">
             <field name="login"/>
             <field name="name"/>
+            <field name="email"/>
             <field name="partner_id"/>
+            <button name="create_partner" string="Create Partner" help="Create partner related to this line" type="object" icon="gtk-add" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+            <field name="user_id"/>
+            <button name="create_user" string="Create User" help="Create user related to partner" type="object" icon="gtk-add" attrs="{'invisible': [('user_id', '!=', False)]}"/>
         </tree>
     </field>
 </record>

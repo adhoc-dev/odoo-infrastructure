@@ -286,6 +286,11 @@ class database(models.Model):
         'Backups Status',
         readonly=True,
         )
+    users_state = fields.Selection(
+        [('ok', 'OK'), ('error', 'Error')],
+        'Users Status',
+        compute='get_users_state',
+        )
     backups_state_detail = fields.Text(
         'Backups Detail',
         readonly=True,
@@ -300,6 +305,34 @@ class database(models.Model):
         compute='get_overall_state',
         store=True,
         )
+
+    @api.multi
+    def create_users_partners(self):
+        return self.env['infrastructure.database.user'].search([
+                ('database_id', 'in', self.ids),
+                ('partner_id', '=', False),
+                ('email', '!=', False),
+                ]).create_partner()
+
+    @api.multi
+    def create_users_users(self):
+        return self.env['infrastructure.database.user'].search([
+                ('database_id', 'in', self.ids),
+                ('user_id', '=', False),
+                ('partner_id', '!=', False),
+                ]).create_user()
+
+    @api.multi
+    def match_users_partners(self):
+        for user in self.env['infrastructure.database.user'].search([
+                ('database_id', 'in', self.ids),
+                ('partner_id', '=', False),
+                ('email', '!=', False),
+                ]):
+            partner = self.env['res.partner'].search(
+                [('email', '=', user.email)], limit=1)
+            if partner:
+                user.partner_id = partner.id
 
     @api.one
     @api.depends('name', 'instance_type_id.prefix')
@@ -331,6 +364,14 @@ class database(models.Model):
         self.refresh_update_state()
         self.last_overall_check_date = fields.Datetime.now()
 
+    @api.depends('user_ids.user_id')
+    def get_users_state(self):
+        without_users = self.user_ids.filtered(lambda x: not x.user_id)
+        if without_users:
+            self.users_state = 'error'
+        else:
+            self.users_state = 'ok'
+
     @api.depends(
         'backups_state',
         'base_modules_state',
@@ -345,8 +386,11 @@ class database(models.Model):
         elif self.update_state and self.update_state not in [
                 'ok', 'optional_update']:
             overall_state = 'error'
-        elif self.instante_state and self.instante_state != 'ok':
-            overall_state = 'error'
+        # TODO ver de incorporarlo pero como no podemos forzar limpiarlo,
+        # nos da error, lo mismo con users_sate. Ta lvez un campo que ignore
+        # directamente los states en vez de clean
+        # elif self.instante_state and self.instante_state != 'ok':
+        #     overall_state = 'error'
         self.overall_state = overall_state
 
     @api.multi

@@ -152,6 +152,7 @@
                                 states="active"
                                 class="oe_link"/>
                         </div>
+                        <field name="users_state"/>
                         <label for="instante_state"/>
                         <div>
                             <field
@@ -229,6 +230,9 @@
                     </page>
                     <page string="Users" states="active">
                         <button name="update_users_data" string="Update" type="object"/>
+                        <button name="match_users_partners" string="Match Partners" type="object" help="Match remote users with local partners by email"/>
+                        <button name="create_users_partners" string="Create Partners" type="object" help="Create partners for remote users without a partner and with an email"/>
+                        <button name="create_users_users" string="Create Users" type="object" help="Create Users for lines with partner and not user"/>
                         <field name="user_ids"/>
                     </page>
                     <page string="Errors">
