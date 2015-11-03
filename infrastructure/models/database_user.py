@@ -86,11 +86,11 @@ class database_user(models.Model):
                 raise Warning(_('Line dont have email'))
             if record.partner_id:
                 raise Warning(_('Line already have a partner'))
+            commercial_partner = record.database_id.partner_id
             record.partner_id = self.env['res.partner'].create({
                 'name': record.name,
-                'parent_id': record.partner_id.commercial_partner_id.id,
+                'parent_id': commercial_partner.id,
                 'email': record.email,
-                'login': record.login,
                 }).id
 
     # TODO ver si dependemos de partner_user o no y si todo esto es necesario
